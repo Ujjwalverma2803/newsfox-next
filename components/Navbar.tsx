@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signIn, signOut, useSession } from "next-auth/react";
-import { FaCat } from "react-icons/fa"; // You may install with: npm i react-icons
 
 const categories = [
   "general",

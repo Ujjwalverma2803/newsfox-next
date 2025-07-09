@@ -23,9 +23,11 @@ export default function FavoritesPage() {
         if (!res.ok) throw new Error("Failed to fetch favorites");
         const data = await res.json();
         setFavorites(data.favorites);
-      } catch (e: any) {
-        setError(e.message || "Something went wrong");
-      } finally {
+      } catch (e) {
+        const message = e instanceof Error ? e.message : "Something went wrong";
+        setError(message);
+      }
+       finally {
         setLoading(false);
       }
     }
