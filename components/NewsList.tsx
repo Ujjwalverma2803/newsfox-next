@@ -52,7 +52,8 @@ export default function NewsList({ category }: Props) {
         setTotalResults(0);
         setError("No articles found.");
       }
-    } catch (_) {
+    } catch (err) {
+      console.error("Error fetching news:", err);
       setError("Failed to fetch news.");
       setArticles([]);
       setTotalResults(0);

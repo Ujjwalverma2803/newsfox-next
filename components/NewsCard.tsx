@@ -46,7 +46,8 @@ export default function NewsCard({ article }: Props) {
       } else {
         throw new Error("Failed to favorite");
       }
-    } catch (_) {
+    } catch (error) {
+      console.error("Favorite error:", error);
       alert("Could not save favorite. Please login.");
     }
     setLoading(false);
