@@ -8,10 +8,13 @@ type Article = {
   title: string;
   description: string;
   url: string;
-  urlToImage: string;
+  image: string;
   publishedAt: string;
-  author: string;
-  source: { name: string };
+  content: string;
+  source: {
+    name: string;
+    url: string;
+  };
 };
 
 type Props = {
@@ -20,8 +23,8 @@ type Props = {
 
 export default function NewsList({ category }: Props) {
   const [articles, setArticles] = useState<Article[]>([]);
-  const [loading, setLoading] = useState(true); // initial loading
-  const [loadingMore, setLoadingMore] = useState(false); // loading on "Load More"
+  const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [page, setPage] = useState(1);
   const [totalResults, setTotalResults] = useState(0);
   const [error, setError] = useState<string | null>(null);
@@ -36,7 +39,7 @@ export default function NewsList({ category }: Props) {
 
     try {
       const apiKey = process.env.NEXT_PUBLIC_NEWS_APIKEY;
-      const url = `https://newsapi.org/v2/top-headlines?country=us&category=${category}&apiKey=${apiKey}&page=${page}&pageSize=${pageSize}`;
+      const url = `https://gnews.io/api/v4/top-headlines?lang=en&topic=${category}&token=${apiKey}&max=${pageSize}&page=${page}`;
       const res = await fetch(url);
       const data = await res.json();
 
@@ -46,7 +49,7 @@ export default function NewsList({ category }: Props) {
         } else {
           setArticles((prev) => [...prev, ...data.articles]);
         }
-        setTotalResults(data.totalResults || 0);
+        setTotalResults(data.totalArticles || 0);
       } else {
         setArticles([]);
         setTotalResults(0);
@@ -65,12 +68,12 @@ export default function NewsList({ category }: Props) {
 
   useEffect(() => {
     setPage(1);
-    fetchNews(false); // initial load
+    fetchNews(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [category]);
 
   useEffect(() => {
-    if (page > 1) fetchNews(true); // load more
+    if (page > 1) fetchNews(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
 
@@ -89,10 +92,9 @@ export default function NewsList({ category }: Props) {
       )}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        {Array.isArray(articles) &&
-          articles.map((article) => (
-            <NewsCard key={article.url} article={article} />
-          ))}
+        {articles.map((article) => (
+          <NewsCard key={article.url} article={article} />
+        ))}
       </div>
 
       {!loading && !error && articles.length < totalResults && (

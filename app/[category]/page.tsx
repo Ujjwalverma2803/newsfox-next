@@ -11,13 +11,14 @@ export default async function CategoryPage({ params }: Props) {
   const { category } = resolvedParams;
 
   const allowedCategories = [
-    "general",
+    "world",
+    "nation",
     "business",
-    "entertainment",
-    "health",
-    "science",
-    "sports",
     "technology",
+    "entertainment",
+    "sports",
+    "science",
+    "health",
   ];
 
   if (!allowedCategories.includes(category)) {

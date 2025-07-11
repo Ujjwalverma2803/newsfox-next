@@ -9,21 +9,20 @@ type Props = {
     title: string;
     description: string;
     url: string;
-    urlToImage: string | null;
+    image: string | null;
     publishedAt: string;
-    author: string;
-    source: { name: string };
+    content?: string;
+    source: { name: string; url: string };
   };
 };
 
 export default function NewsCard({ article }: Props) {
-  const { title, description, url, urlToImage, publishedAt, author, source } =
-    article;
+  const { title, description, url, image, publishedAt, source } = article;
 
   const [imgError, setImgError] = useState(false);
   const [isFavorited, setIsFavorited] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [animate, setAnimate] = useState(false); // for animation trigger
+  const [animate, setAnimate] = useState(false);
 
   const handleFavorite = async () => {
     if (loading || isFavorited) return;
@@ -35,14 +34,14 @@ export default function NewsCard({ article }: Props) {
         body: JSON.stringify({
           title,
           url,
-          imageUrl: urlToImage,
+          imageUrl: image,
           source: source?.name,
         }),
       });
       if (res.ok) {
         setIsFavorited(true);
         setAnimate(true);
-        setTimeout(() => setAnimate(false), 600); // reset animation after 600ms
+        setTimeout(() => setAnimate(false), 600);
       } else {
         throw new Error("Failed to favorite");
       }
@@ -55,17 +54,13 @@ export default function NewsCard({ article }: Props) {
 
   return (
     <div className="group bg-white rounded-xl shadow-md hover:shadow-2xl transition duration-300 overflow-hidden relative border border-gray-200">
-      {/* Source badge */}
       <span className="absolute top-2 right-2 bg-gradient-to-r from-red-500 to-pink-500 text-white text-xs font-semibold px-2 py-1 rounded shadow-sm z-10">
         {source?.name}
       </span>
 
-      {/* Favorite Button - top-right over image */}
-
-      {/* Conditional Image or Placeholder */}
-      {urlToImage && !imgError ? (
+      {image && !imgError ? (
         <img
-          src={urlToImage}
+          src={image}
           alt={title}
           onError={() => setImgError(true)}
           className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
@@ -76,23 +71,20 @@ export default function NewsCard({ article }: Props) {
         </div>
       )}
 
-      {/* Content */}
       <div className="p-4 space-y-2 relative">
         <h2 className="text-lg font-bold text-gray-800 leading-snug line-clamp-2">
           {title}
         </h2>
         <p className="text-sm text-gray-600 line-clamp-3">{description}</p>
         <p className="text-xs text-gray-400">
-          By{" "}
+          Published on{" "}
           <span className="font-medium text-gray-500">
-            {author || "Unknown"}
-          </span>{" "}
-          •{" "}
-          {new Date(publishedAt).toLocaleDateString("en-US", {
-            year: "numeric",
-            month: "short",
-            day: "numeric",
-          })}
+            {new Date(publishedAt).toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "short",
+              day: "numeric",
+            })}
+          </span>
         </p>
 
         <a
@@ -105,7 +97,6 @@ export default function NewsCard({ article }: Props) {
         </a>
       </div>
 
-      {/* Custom animation keyframe style in Tailwind config (or inline via style tag) */}
       <style jsx global>{`
         @keyframes pulse-scale {
           0%,
@@ -127,11 +118,9 @@ export default function NewsCard({ article }: Props) {
         disabled={loading || isFavorited}
         aria-label={isFavorited ? "Favorited" : "Add to favorites"}
         title={isFavorited ? "Added to favorites" : "Add to favorites"}
-        className={`
-          absolute bottom-2 right-2 z-20 p-1 rounded-full bg-white bg-opacity-90 hover:bg-opacity-100
-          transition disabled:opacity-50
-          ${animate ? "animate-pulse-scale" : ""}
-        `}
+        className={`absolute bottom-2 right-2 z-20 p-1 rounded-full bg-white bg-opacity-90 hover:bg-opacity-100 transition disabled:opacity-50 ${
+          animate ? "animate-pulse-scale" : ""
+        }`}
       >
         {loading ? (
           <svg

@@ -5,14 +5,16 @@ import { usePathname } from "next/navigation";
 import { signIn, signOut, useSession } from "next-auth/react";
 
 const categories = [
-  "general",
+  "world",
+  "nation",
   "business",
-  "entertainment",
-  "health",
-  "science",
-  "sports",
   "technology",
+  "entertainment",
+  "sports",
+  "science",
+  "health",
 ];
+
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -38,7 +40,7 @@ export default function Navbar() {
               href={`/${cat}`}
               className={`capitalize text-sm font-medium hover:text-red-400 transition ${
                 pathname === `/${cat}` ||
-                (pathname === "/" && cat === "general")
+                (pathname === "/" && cat === "world")
                   ? "text-red-400"
                   : ""
               }`}
