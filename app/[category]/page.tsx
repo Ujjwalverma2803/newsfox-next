@@ -6,7 +6,6 @@ type Props = {
 };
 
 export default async function CategoryPage({ params }: Props) {
-  // Await params before destructuring
   const resolvedParams = await params;
   const { category } = resolvedParams;
 
